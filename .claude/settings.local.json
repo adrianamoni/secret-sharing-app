@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(yarn add tailwindcss @tailwindcss/vite class-variance-authority clsx tailwind-merge lucide-react zustand react-hook-form @hookform/resolvers zod react-router-dom)",
+      "Bash(yarn build:*)",
+      "Bash(yarn lint:*)",
+      "Skill(frontend-design)",
+      "Skill(write_tests)",
+      "Bash(yarn add:*)",
+      "Bash(yarn test:run:*)"
+    ]
+  }
+}
