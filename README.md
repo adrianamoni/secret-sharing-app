@@ -1,73 +1,69 @@
-# React + TypeScript + Vite
+# Secret Sharing App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A secure secret sharing application that allows users to create encrypted secrets and share them via secure URLs. Secrets can be configured to self-destruct after being viewed.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Client-side encryption** - Secrets are encrypted using AES-GCM (Web Crypto API) before storage
+- **Key in URL fragment** - The encryption key is stored in the URL hash (`#key`), never sent to servers
+- **Self-destruct** - Option to automatically delete secrets after being viewed
+- **No backend required** - All data is stored locally in the browser
+- **Shareable URLs** - Generate secure links to share secrets
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+| Category | Technology |
+|----------|------------|
+| Framework | React 19 + TypeScript |
+| Build Tool | Vite 7 |
+| Styling | Tailwind CSS v4 |
+| State Management | Zustand (with localStorage persistence) |
+| Forms | react-hook-form + Zod |
+| Routing | react-router-dom |
+| Encryption | Web Crypto API (AES-GCM) |
 
-## Expanding the ESLint configuration
+## Installation
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+```bash
+# Install dependencies
+yarn install
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+# Development server
+yarn dev
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+# Production build
+yarn build
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+# Preview build
+yarn preview
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## How It Works
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+1. User creates a secret with a title and content
+2. Content is encrypted in the browser using AES-GCM
+3. A URL is generated with the format `/secret/:id#encryptionKey`
+4. When opening the URL, the secret is decrypted using the key from the hash
+5. If self-destruct is enabled, the secret is deleted after being viewed
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Project Structure
+
 ```
+src/
+├── components/
+│   ├── ui/                    # Reusable components (shadcn-style)
+│   ├── SecretCard.tsx         # Secret card in the list
+│   └── CreateSecretDialog.tsx # Dialog for creating secrets
+├── pages/
+│   ├── HomePage.tsx           # Main view with secret list
+│   └── ViewSecretPage.tsx     # Decrypts and displays shared secrets
+├── stores/
+│   └── secretStore.ts         # Zustand store with persistence
+└── lib/
+    ├── crypto.ts              # AES-GCM encryption functions
+    └── utils.ts               # Utilities (cn helper)
+```
+
+## License
+
+MIT
